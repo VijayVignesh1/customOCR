@@ -1,0 +1,54 @@
+
+data:
+  dataset_dir: "../data/generated/synthetic"
+  num_images: 10
+  img_height: 32
+  img_width: 128
+  batch_size: 32
+  train_split: 0.9
+  shuffle: true
+  num_workers: 4
+  generator:
+    name: "predefined_strings"   # options: "predefined_strings", "random_words", etc.
+    train:
+      output_dir: "../data/generated/train"
+    val:
+      output_dir: "../data/generated/val"
+    params:
+      strings:
+        - "Hello"
+        - "World"
+      count: 5
+      size: 100
+      language: "en"
+      text_color: "#000000"
+      skewing_angle: 3
+      blur: 1
+  train_dir: "../data/generated/train/labels.json"
+  val_dir: "../data/generated/val/labels.json"
+
+model:
+  name: "crnn_resnet"  # model class name in src/models/
+  configs:
+    num_classes: 38  # Updated: 26 lowercase + 10 digits + 2 blank = 38
+    hidden_size: 256
+    rnn_layers: 2
+    dropout: 0.1
+    backbone: "resnet34"
+    pretrained: True
+
+train:
+  epochs: 20
+  lr: 0.0001
+  optimizer: "Adam"
+  weight_decay: 0.0
+  device: "cuda"
+
+checkpoint:
+  save_dir: "outputs/checkpoints"
+  save_every_n_epochs: 5
+  resume_from: null
+
+logging:
+  log_dir: "outputs/logs"
+  log_every_n_steps: 10

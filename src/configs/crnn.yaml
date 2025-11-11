@@ -1,2 +1,0 @@
-num_classes: 38   # 26 letters + 10 digits + 2 symbols + blank
-hidden_size: 256
