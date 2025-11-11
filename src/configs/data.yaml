@@ -1,0 +1,3 @@
+
+train_dir: "../data/synthetic/train/"
+val_dir: "../data/synthetic/train/"
