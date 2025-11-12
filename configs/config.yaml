@@ -1,6 +1,6 @@
 
 data:
-  dataset_dir: "../data/generated/synthetic"
+  dataset_dir: "../../data/generated/synthetic"
   num_images: 10
   img_height: 32
   img_width: 128
@@ -9,11 +9,11 @@ data:
   shuffle: true
   num_workers: 4
   generator:
-    name: "predefined_strings"   # options: "predefined_strings", "random_words", etc.
+    name: "predefined_strings"   # options: "predefined_strings", "random_words", "none", etc.
     train:
-      output_dir: "../data/generated/train"
+      output_dir: "../../data/generated/train"
     val:
-      output_dir: "../data/generated/val"
+      output_dir: "../../data/generated/val"
     params:
       strings:
         - "Hello"
@@ -24,8 +24,8 @@ data:
       text_color: "#000000"
       skewing_angle: 3
       blur: 1
-  train_dir: "../data/generated/train/labels.json"
-  val_dir: "../data/generated/val/labels.json"
+  train_dir: "../../data/generated/train/labels.json"
+  val_dir: "../../data/generated/val/labels.json"
 
 model:
   name: "crnn_resnet"  # model class name in src/models/
@@ -38,7 +38,7 @@ model:
     pretrained: True
 
 train:
-  epochs: 20
+  epochs: 1
   lr: 0.0001
   optimizer: "Adam"
   weight_decay: 0.0

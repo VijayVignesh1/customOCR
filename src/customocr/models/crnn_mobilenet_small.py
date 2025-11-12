@@ -71,5 +71,5 @@ class CRNN_MobileNetV3_Small(BaseOCRModel):
     def predict(self, x):
         self.eval()
         logits = self.forward(x)
-        preds = logits.argmax(2)
-        return preds
+        # preds = logits.argmax(2)
+        return logits

@@ -1,4 +1,4 @@
-from src.data.generate_synthetic import random_strings, predefined_strings
+from customocr.data.generate_synthetic import random_strings, predefined_strings
 
 def get_generator(name: str):
     """Factory method to get string generator functions."""

@@ -1,6 +1,6 @@
-from src.models.crnn import CRNN
-from .crnn_mobilenet_small import CRNN_MobileNetV3_Small
-from .crnn_resnet import CRNN_ResNet
+from customocr.models.crnn import CRNN
+from customocr.models.crnn_mobilenet_small import CRNN_MobileNetV3_Small
+from customocr.models.crnn_resnet import CRNN_ResNet
 
 def get_model(name, config):
     name = name.lower()

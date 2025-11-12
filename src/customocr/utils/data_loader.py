@@ -1,6 +1,6 @@
 from torch.utils.data import DataLoader
-from src.data.dataset import OCRDataset
-from src.data.collate import collate_fn  # assuming you already have this
+from customocr.data.dataset import OCRDataset
+from customocr.data.collate import collate_fn  # assuming you already have this
 
 def create_dataloaders(cfg):
     """

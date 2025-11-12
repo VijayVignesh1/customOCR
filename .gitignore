@@ -210,4 +210,4 @@ __marimo__/
 data/*
 
 # lightning logs
-src/lightning_logs/**/*
+src/customocr/lightning_logs/**/*

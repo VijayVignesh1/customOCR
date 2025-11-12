@@ -1,14 +1,8 @@
 import torch
 from torch import nn
-from data.collate import decode_text
+from customocr.data.collate import decode_text
 import pytorch_lightning as pl
-from src.utils.metrics import compute_cer, compute_wer
-from src.models.factory import get_model
-from src.utils.data_loader import create_dataloaders
-from src.utils.config_parser import load_config
-from src.data.generate_synthetic import random_strings, predefined_strings
-from utils.functions import generate_random_word
-from src.data.factory import get_generator
+from customocr.utils.metrics import compute_cer, compute_wer
 
 class OCRLightningModule(pl.LightningModule):
     def __init__(self, model, cfg):
@@ -81,39 +75,6 @@ class OCRLightningModule(pl.LightningModule):
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
     
-
-class OCRTrainer:
-    def __init__(self, cfg):
-        self.cfg = cfg
-
-        # 1️⃣ Generate dataset if missing
-        generator_name = cfg["data"]["generator"]["name"]
-        generator = get_generator(generator_name)
-        train_params = cfg["data"]["generator"]["train"]
-        val_params = cfg["data"]["generator"]["val"]
-        generator(train_params["output_dir"], **cfg["data"]["generator"]["params"])
-        generator(val_params["output_dir"], **cfg["data"]["generator"]["params"])
-
-        # 2️⃣ Create dataloaders
-        self.train_loader, self.val_loader = create_dataloaders(cfg["data"])
-
-        # 3️⃣ Initialize model
-        self.model = get_model(cfg["model"]["name"], cfg["model"]["configs"])
-
-        # 4️⃣ Wrap in LightningModule
-        self.lit_model = OCRLightningModule(self.model, cfg)
-
-        print("[INFO] Trainer initialized.")
-    def fit(self):
-        trainer = pl.Trainer(
-            max_epochs=self.cfg["train"]["epochs"],
-            accelerator="auto",
-            devices=1 if torch.cuda.is_available() else None
-        )
-        trainer.fit(self.lit_model, train_dataloaders=self.train_loader, val_dataloaders=self.val_loader)
-        trainer.validate(self.lit_model, self.val_loader)
-    def predict(self, image_tensor):
-        return self.lit_model.model.predict(image_tensor)
 
 # cfg = load_config("../configs/config.yaml")
 # lit_model = OCRTrainer(cfg)

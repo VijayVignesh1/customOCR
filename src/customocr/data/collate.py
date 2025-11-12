@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torchvision import transforms
-from src.data.charset import CHAR_TO_IDX, IDX_TO_CHAR
+from customocr.data.charset import CHAR_TO_IDX, IDX_TO_CHAR
 
 # ---------------------------
 # Encode text -> indices

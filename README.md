@@ -15,7 +15,45 @@ CustomOCR is a complete end-to-end OCR training pipeline built with PyTorch and 
 - **PyTorch Lightning**: Modern training framework with built-in logging and checkpointing
 - **Flexible Image Sizes**: Automatic resizing and padding to standardized dimensions (32x128)
 
-## Project Structure [WIP]
+## Project Structure 
+
+```
+customOCR/
+├── configs/
+│   └── config.yaml               # Main configuration file
+├── data/                         # Generated datasets directory
+├── src/
+│   ├── ${root_dir}/              # Root directory reference
+│   ├── __init__.py               # Package initialization
+│   ├── main.py                   # Main entry point
+│   ├── train.py                  # Training script
+│   ├── data/
+│   │   ├── __init__.py           # Data module exports
+│   │   ├── charset.py            # Character set definitions
+│   │   ├── collate.py            # Custom collate function with text encoding
+│   │   ├── dataset.py            # OCR dataset class
+│   │   ├── factory.py            # Data factory for different generators
+│   │   └── generate_synthetic.py # Synthetic data generation
+│   ├── models/
+│   │   ├── __init__.py           # Model module exports
+│   │   ├── base_model.py         # Abstract base class for OCR models
+│   │   ├── crnn.py               # Basic CRNN implementation
+│   │   ├── crnn_mobilenet_small.py # MobileNet-based CRNN
+│   │   ├── crnn_resnet.py        # ResNet-based CRNN
+│   │   └── factory.py            # Model factory
+│   └── utils/
+│       ├── __init__.py           # Utils module exports
+│       ├── config_parser.py      # YAML configuration parser
+│       ├── data_loader.py        # DataLoader creation utilities
+│       ├── functions.py          # Utility functions
+│       └── metrics.py            # Evaluation metrics (CER/WER)
+├── customocr.egg-info/           # Package metadata
+├── requirements.txt              # Python dependencies
+├── setup.py                      # Package setup configuration
+├── LICENSE                       # MIT License
+└── README.md                     # This file
+``` 
+
 
 ## Installation
 
@@ -29,18 +67,104 @@ CustomOCR is a complete end-to-end OCR training pipeline built with PyTorch and 
    ```bash
    pip install -r requirements.txt
    ```
-3. **Install the package**:
-    ```bash
-    pip install -e .
-    ```
 
-## Quick Start [WIP]
+3. **Install system dependencies** (for TRDG and PIL):
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get update
+   sudo apt-get install libfreetype6-dev libjpeg-dev libpng-dev libwebp-dev libopenjp2-7-dev build-essential
+   
+   # CentOS/RHEL/Fedora
+   sudo dnf install freetype-devel libjpeg-devel libpng-devel libwebp-devel openjpeg2-devel gcc gcc-c++
+   ```
+
+4. **Install the package**:
+   ```bash
+   pip install -e .
+   ```
+
+## Quick Start
+
+### 1. Generate Synthetic Dataset
+
+```bash
+# Generate training and validation data
+python -c "
+from src.data.generate_synthetic import predefined_strings
+predefined_strings(
+    output_dir='data/synthetic/train', 
+    strings=[f'Sample Text {i}' for i in range(100)]
+)
+predefined_strings(
+    output_dir='data/synthetic/val', 
+    strings=[f'Validation {i}' for i in range(20)]
+)
+"
+```
+
+### 2. Configure Training
+
+Edit `configs/config.yaml` to customize your training:
+
+```yaml
+data:
+  train_dir: "data/synthetic/train/labels.json"
+  val_dir: "data/synthetic/val/labels.json"
+  batch_size: 32
+
+model:
+  name: "crnn_resnet"  # or "crnn", "crnn_mobilenet_small"
+  configs:
+    num_classes: 98
+    hidden_size: 256
+
+train:
+  epochs: 20
+  lr: 0.001
+```
+
+### 3. Train the Model
+
+```bash
+# Run training
+python src/main.py
+
+# Or use the training script directly
+python src/train.py
+```
+
+### 4. Use custom config file
+
+```bash
+from customOCR import CustomOCR
+
+config_path = "/path/to/config.yaml"
+ocr_trainer = CustomOCR(config_path)
+ocr_trainer.fit()
+```
+
+### 5. Quick Test
+
+```python
+from src.models import get_model
+from src.utils import load_config
+from PIL import Image
+
+# Load trained model
+config = load_config("configs/config.yaml")
+model = get_model(config["model"]["name"], config["model"]["configs"])
+
+# Load and predict on an image
+image = Image.open("path/to/your/image.png")
+prediction = model.predict(image)
+print(f"Predicted text: {prediction}")
+```
 
 
 ## Architecture Details
 
 ### CRNN Model
-- **CNN Backbone**: 5 convolutional layers with MaxPooling to reduce height to 1
+- **CNN Backbone**: Custom CNN / ResNet / MobileNet
 - **RNN Component**: 2-layer bidirectional LSTM for sequence modeling
 - **Output Layer**: Linear layer mapping to character vocabulary
 - **Input**: RGB images of size 32×128
@@ -49,9 +173,7 @@ CustomOCR is a complete end-to-end OCR training pipeline built with PyTorch and 
 ### Character Vocabulary
 The model supports:
 - Lowercase letters: a-z (indices 2-27)
-- Uppercase letters: A-Z (indices 28-53)
 - Digits: 0-9 (indices 54-63)
-- Special characters: `!@#$%^&*(){}[]|\~`'".,;:?/-_+=<>` (indices 64-97)
 - Space: (index 1)
 - CTC Blank: (index 0)
 
@@ -60,7 +182,6 @@ The model supports:
 - **Text Encoding**: Character-to-index mapping for CTC loss
 - **Collate Function**: Custom batching with variable text lengths
 
-## Configuration
 
 ### Configuration (`configs/config.yaml`)
 ```yaml

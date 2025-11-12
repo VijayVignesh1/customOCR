@@ -93,5 +93,4 @@ class CRNN_ResNet(BaseOCRModel):
     def predict(self, x):
         self.eval()
         logits = self.forward(x)
-        preds = logits.argmax(2)
-        return preds
+        return logits

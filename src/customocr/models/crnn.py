@@ -69,5 +69,4 @@ class CRNN(BaseOCRModel):
         self.eval()
         with torch.no_grad():
             logits = self.forward(x)
-            preds = logits.argmax(2)
-        return preds
+        return logits
