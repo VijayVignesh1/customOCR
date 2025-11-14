@@ -87,9 +87,8 @@ customOCR/
 
 ### 1. Generate Synthetic Dataset
 
-```bash
-# Generate training and validation data
-python -c "
+```python
+
 from src.data.generate_synthetic import predefined_strings
 predefined_strings(
     output_dir='data/synthetic/train',
@@ -99,7 +98,7 @@ predefined_strings(
     output_dir='data/synthetic/val',
     strings=[f'Validation {i}' for i in range(20)]
 )
-"
+
 ```
 
 ### 2. Configure Training
@@ -135,7 +134,7 @@ python src/train.py
 
 ### 4. Use custom config file
 
-```bash
+```python
 from customOCR import CustomOCR
 
 config_path = "/path/to/config.yaml"
