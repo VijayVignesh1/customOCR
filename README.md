@@ -15,7 +15,7 @@ CustomOCR is a complete end-to-end OCR training pipeline built with PyTorch and 
 - **PyTorch Lightning**: Modern training framework with built-in logging and checkpointing
 - **Flexible Image Sizes**: Automatic resizing and padding to standardized dimensions (32x128)
 
-## Project Structure 
+## Project Structure
 
 ```
 customOCR/
@@ -52,7 +52,7 @@ customOCR/
 ├── setup.py                      # Package setup configuration
 ├── LICENSE                       # MIT License
 └── README.md                     # This file
-``` 
+```
 
 
 ## Installation
@@ -73,7 +73,7 @@ customOCR/
    # Ubuntu/Debian
    sudo apt-get update
    sudo apt-get install libfreetype6-dev libjpeg-dev libpng-dev libwebp-dev libopenjp2-7-dev build-essential
-   
+
    # CentOS/RHEL/Fedora
    sudo dnf install freetype-devel libjpeg-devel libpng-devel libwebp-devel openjpeg2-devel gcc gcc-c++
    ```
@@ -92,11 +92,11 @@ customOCR/
 python -c "
 from src.data.generate_synthetic import predefined_strings
 predefined_strings(
-    output_dir='data/synthetic/train', 
+    output_dir='data/synthetic/train',
     strings=[f'Sample Text {i}' for i in range(100)]
 )
 predefined_strings(
-    output_dir='data/synthetic/val', 
+    output_dir='data/synthetic/val',
     strings=[f'Validation {i}' for i in range(20)]
 )
 "

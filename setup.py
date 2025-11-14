@@ -1,11 +1,15 @@
-from setuptools import setup, find_packages
 from pathlib import Path
+
+from setuptools import find_packages
+from setuptools import setup
+
 
 def load_requirements():
     requirements_file = Path(__file__).parent / "requirements.txt"
     if requirements_file.exists():
-        return requirements_file.read_text().strip().split('\n')
+        return requirements_file.read_text().strip().split("\n")
     return []
+
 
 setup(
     name="customocr",
@@ -15,7 +19,8 @@ setup(
     python_requires=">=3.8",
     install_requires=load_requirements(),
     author="Vijay Vignesh",
-    description="A quick and easy pipeline for generating OCR dataset and finetuning a model",
+    description="A quick and easy pipeline for generating "
+    "OCR dataset and finetuning a model",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/VijayVignesh1/customOCR",

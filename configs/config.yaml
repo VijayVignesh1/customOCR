@@ -4,12 +4,12 @@ data:
   num_images: 10
   img_height: 32
   img_width: 128
-  batch_size: 32
+  batch_size: 8
   train_split: 0.9
   shuffle: true
   num_workers: 4
   generator:
-    name: "predefined_strings"   # options: "predefined_strings", "random_words", "none", etc.
+    name: "predefined_strings"   # options: "predefined_strings", "random_strings", "none", etc.
     train:
       output_dir: "../../data/generated/train"
     val:
@@ -18,8 +18,9 @@ data:
       strings:
         - "Hello"
         - "World"
-      count: 5
-      size: 100
+      # use_symbols: false
+      count: 1000
+      size: 32
       language: "en"
       text_color: "#000000"
       skewing_angle: 3
@@ -30,16 +31,16 @@ data:
 model:
   name: "crnn_resnet"  # model class name in src/models/
   configs:
-    num_classes: 38  # Updated: 26 lowercase + 10 digits + 2 blank = 38
+    num_classes: 65  # Updated: 26 lowercase + 26 uppercase + 10 digits + 2 blank = 64
     hidden_size: 256
     rnn_layers: 2
     dropout: 0.1
-    backbone: "resnet34"
-    pretrained: True
+    # backbone: "resnet34"
+    pretrained: False
 
 train:
-  epochs: 1
-  lr: 0.0001
+  epochs: 50
+  lr: 0.001
   optimizer: "Adam"
   weight_decay: 0.0
   device: "cuda"

@@ -1,12 +1,20 @@
-from .base_model import BaseOCRModel
 import torch
 import torch.nn as nn
 from torchvision.models import mobilenet_v3_large
 
+from .base_model import BaseOCRModel
+
+
 class CRNN_MobileNetV3_Small(BaseOCRModel):
-    def __init__(self, num_classes=65, hidden_size=256, rnn_layers=2, dropout=0.5, pretrained=True):
-        """
-        CRNN model using MobileNetV3-Small backbone for OCR fine-tuning.
+    def __init__(
+        self,
+        num_classes=65,
+        hidden_size=256,
+        rnn_layers=2,
+        dropout=0.5,
+        pretrained=True,
+    ):
+        """CRNN model using MobileNetV3-Small backbone for OCR fine-tuning.
 
         Args:
             num_classes (int): Number of output classes (charset size + blank)
@@ -22,10 +30,12 @@ class CRNN_MobileNetV3_Small(BaseOCRModel):
 
         # Remove classifier and pooling layers
         self.cnn = nn.Sequential(*list(mobilenet.features.children()))
-        cnn_output_channels = 960  # last conv output channels for MobileNetV3-Small
+        cnn_output_channels = (
+            960  # last conv output channels for MobileNetV3-Small
+        )
 
         with torch.inference_mode():
-            out_shape = self.cnn(torch.zeros((1, *(3, 32, 128)))).shape
+            self.cnn(torch.zeros((1, *(3, 32, 128)))).shape
 
         # Add adaptive pooling to normalize height → 1
         # CRNN expects (B, C, 1, W)
@@ -51,7 +61,7 @@ class CRNN_MobileNetV3_Small(BaseOCRModel):
         Returns:
             Output in (T, N, C) format for CTC loss
         """
-        features = self.cnn(x)                 # (B, C, H', W')
+        features = self.cnn(x)  # (B, C, H', W')
         features = self.adaptive_pool(features)  # (B, C, 1, W')
         b, c, h, w = features.size()
 

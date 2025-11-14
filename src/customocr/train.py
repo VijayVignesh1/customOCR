@@ -1,14 +1,16 @@
+import pytorch_lightning as pl
 import torch
 from torch import nn
-from customocr.data.collate import decode_text
-import pytorch_lightning as pl
-from customocr.utils.metrics import compute_cer, compute_wer
+
+from customocr.utils.functions import decode_text
+from customocr.utils.metrics import compute_cer
+from customocr.utils.metrics import compute_wer
+
 
 class OCRLightningModule(pl.LightningModule):
     def __init__(self, model, cfg):
-        """
-        Lightning module for OCR.
-        
+        """Lightning module for OCR.
+
         Args:
             model: PyTorch OCR model (CRNN, MobileNet CRNN, etc.)
             cfg: Config dict
@@ -30,7 +32,10 @@ class OCRLightningModule(pl.LightningModule):
         preds = self(imgs)
         preds_log = preds.log_softmax(2)
         input_lengths = torch.full(
-            (preds.size(1),), preds.size(0), dtype=torch.long, device=self.device
+            (preds.size(1),),
+            preds.size(0),
+            dtype=torch.long,
+            device=self.device,
         )
 
         loss = self.criterion(preds_log, labels, input_lengths, label_lengths)
@@ -45,7 +50,10 @@ class OCRLightningModule(pl.LightningModule):
         preds = self(imgs)
         preds_log = preds.log_softmax(2)
         input_lengths = torch.full(
-            (preds.size(1),), preds.size(0), dtype=torch.long, device=self.device
+            (preds.size(1),),
+            preds.size(0),
+            dtype=torch.long,
+            device=self.device,
         )
 
         loss = self.criterion(preds_log, labels, input_lengths, label_lengths)
@@ -55,13 +63,15 @@ class OCRLightningModule(pl.LightningModule):
         _, pred_indices = preds_log.max(2)
         pred_indices = pred_indices.transpose(1, 0)
 
-        pred_texts = [decode_text(torch.tensor(seq.cpu().numpy())) for seq in pred_indices]
+        pred_texts = [
+            decode_text(torch.tensor(seq.cpu().numpy())) for seq in pred_indices
+        ]
 
         # Decode ground truth
         gt_texts = []
         start = 0
         for length in label_lengths:
-            seq = labels[start:start+length].cpu()
+            seq = labels[start : start + length].cpu()
             gt_texts.append(decode_text(seq))
             start += length
 
@@ -74,7 +84,7 @@ class OCRLightningModule(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr)
-    
+
 
 # cfg = load_config("../configs/config.yaml")
 # lit_model = OCRTrainer(cfg)

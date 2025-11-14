@@ -1,7 +1,10 @@
-from .base_model import BaseOCRModel
 import torch
 import torch.nn as nn
-from torchvision.models import resnet34, resnet18, resnet50
+from torchvision.models import resnet18
+from torchvision.models import resnet34
+from torchvision.models import resnet50
+
+from .base_model import BaseOCRModel
 
 
 class CRNN_ResNet(BaseOCRModel):
@@ -15,8 +18,7 @@ class CRNN_ResNet(BaseOCRModel):
         pretrained=True,
         **kwargs,
     ):
-        """
-        CRNN model using ResNet backbone for OCR fine-tuning.
+        """CRNN model using ResNet backbone for OCR fine-tuning.
 
         Args:
             num_classes (int): Number of output classes (charset size + blank)
@@ -73,7 +75,7 @@ class CRNN_ResNet(BaseOCRModel):
         Returns:
             Output in (T, N, C) format for CTC loss
         """
-        features = self.cnn(x)                   # (B, C, H', W')
+        features = self.cnn(x)  # (B, C, H', W')
         features = self.adaptive_pool(features)  # (B, C, 1, W')
         b, c, h, w = features.size()
 

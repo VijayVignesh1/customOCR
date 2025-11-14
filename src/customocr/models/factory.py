@@ -2,6 +2,7 @@ from customocr.models.crnn import CRNN
 from customocr.models.crnn_mobilenet_small import CRNN_MobileNetV3_Small
 from customocr.models.crnn_resnet import CRNN_ResNet
 
+
 def get_model(name, config):
     name = name.lower()
     if name == "crnn":

@@ -1,0 +1,173 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[project]
+name = "customocr"
+version = "0.1.0"
+description = "A quick and easy pipeline for generating OCR dataset and finetuning a model"
+readme = "README.md"
+license = { text = "MIT" }
+
+authors = [
+    { name = "Vijay Vignesh", email = "vijayvigneshp02@gmail.com" }
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+keywords = ["ocr", "computer-vision", "deep-learning", "pytorch", "crnn"]
+requires-python = ">=3.8"
+dynamic = ["dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/VijayVignesh1/customOCR"
+Repository = "https://github.com/VijayVignesh1/customOCR"
+Issues = "https://github.com/VijayVignesh1/customOCR/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=3.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pydocstyle>=6.3.0",
+    "autoflake>=2.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0"
+]
+
+[project.scripts]
+customocr = "customocr.main:main"
+
+# Include default model files (if needed)
+[tool.setuptools.package-data]
+customocr = ["models/*", "configs/*"]
+
+
+# ============================
+# Formatting & Imports (Google)
+# ============================
+
+[tool.black]
+target-version = ["py38", "py39", "py310", "py311"]
+skip-string-normalization = true
+
+[tool.isort]
+profile = "google"
+multi_line_output = 3
+include_trailing_comma = true
+
+
+# ============================
+# Static Typing (Mypy)
+# ============================
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+
+
+# ============================
+# Testing (PyTest)
+# ============================
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--cov=customocr",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--cov-report=html"
+]
+testpaths = ["tests"]
+
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests"
+]
+
+
+# ============================
+# Coverage
+# ============================
+
+[tool.coverage.run]
+source = ["src/customocr"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/site-packages/*"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:"
+]
+
+
+# ============================
+# Docstrings (Google Style)
+# ============================
+
+[tool.pydocstyle]
+convention = "google"
+add-ignore = ["D100", "D104", "D105", "D107"]
+
+
+# ============================
+# Security (Bandit)
+# ============================
+
+[tool.bandit]
+exclude_dirs = ["tests", "test_*"]
+skips = ["B101", "B601"]
+
+
+# ============================
+# Autoflake
+# ============================
+
+[tool.autoflake]
+remove-all-unused-imports = true
+remove-unused-variables = true
+remove-duplicate-keys = true
+ignore-init-module-imports = true

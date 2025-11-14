@@ -1,6 +1,7 @@
 numpy>=1.21,<2.0
 Pillow>=7.0.0,<10.0.0
 trdg==1.6.0
+pytorch-lightning
 torch
 torchvision
 PyYAML
